@@ -42,7 +42,7 @@ class AprioriExtractor:
 		L.pop()
 		
 		# extract rules
-		rules = self.extractRules(L, Supports)
+		rules = self.extract1RRules(L, Supports)
 		print rules
 
 	def loadData(self):
@@ -110,6 +110,20 @@ class AprioriExtractor:
 		for largesets in L:
 			for lset in largesets:
 				for lhs in itertools.chain.from_iterable(itertools.combinations(lset, i) for i in range(1, len(lset))):
+					conf = Supports[len(lset)][lset] / Supports[len(lhs)][lhs]
+					if conf >= self.min_conf:
+						rhs = tuple(item for item in lset if item not in lhs)
+						rules.append((lhs, rhs))
+		return rules
+
+	def extract1RRules(self, L, Supports):
+		if len(L) <= 2:
+			print 'No rule extracted'
+			return
+		rules = []
+		for largesets in L:
+			for lset in largesets:
+				for lhs in itertools.combinations(lset, len(lset) - 1):
 					conf = Supports[len(lset)][lset] / Supports[len(lhs)][lhs]
 					if conf >= self.min_conf:
 						rhs = tuple(item for item in lset if item not in lhs)
