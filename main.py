@@ -2,25 +2,22 @@
 
 import csv, sys, itertools
 
-def properNonemptyPowerset(iterable):
-	itertools.chain(itertools.combinations(iterable, i) for i in range(1, len(iterable)))
-
 class AprioriExtractor:
 
 	def __init__(self, datafile, min_sup, min_conf):
 		self.datafile = datafile
 		self.min_sup = min_sup
 		self.min_conf = min_conf
+		self.discrete_granularity = [-1, -1, -1, 50, 50, 50000, 1000000, 20, 5000000, 50]
+		self.discrete_start = [0, 0, 0, 50, 1850, 50000, 1000000, 20, 5000000, 50]
 
 	def run(self):
 		# read data
-		database = None
-		with open(self.datafile, 'r') as csvfile:
-			csvreader = csv.reader(csvfile)
-			database = list(csvreader)
+		database, header = self.loadData()
 		if not database:
 			print 'Error reading data file'
 			return
+		
 		# sort items in transactions
 		for transac in database:
 			transac.sort()
@@ -47,6 +44,28 @@ class AprioriExtractor:
 		# extract rules
 		rules = self.extractRules(L, Supports)
 		print rules
+
+	def loadData(self):
+		database = header = None
+		# read raw from file
+		with open(self.datafile, 'r') as csvfile:
+			csvreader = csv.reader(csvfile)
+			header = csvreader.next()
+			database = []
+			for row in csvreader:
+				database.append(map(lambda i: (i, row[i]), range(len(row))))
+		# discretize numeric attributes
+		for i in range(len(header)):
+			self.discretizeAttribute(database, i)
+		return database, header
+
+	def discretizeAttribute(self, database, k):
+		# negative granularity means this is not a numeric attribute
+		if self.discrete_granularity[k] < 0:
+			return
+		for row in database:
+			bound = ((int(float(row[k][1])) - self.discrete_start[k]) / self.discrete_granularity[k] + 1) * self.discrete_granularity[k] + self.discrete_start[k]
+			row[k] = (row[k][0], bound)
 
 	# This function selects large itemsets and returns a dictionary with the keys large itemsets and the values supports
 	def selectCandidates(self, candidates, database):
