@@ -123,6 +123,8 @@ class AprioriExtractor:
 		rules = []
 		for largesets in L:
 			for lset in largesets:
+				if len(lset) < 2:
+					continue
 				for lhs in itertools.combinations(lset, len(lset) - 1):
 					conf = Supports[len(lset)][lset] / Supports[len(lhs)][lhs]
 					if conf >= self.min_conf:
