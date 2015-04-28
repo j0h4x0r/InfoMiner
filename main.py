@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import csv, sys, itertools
+import csv, sys, itertools, codecs
 
 class AprioriExtractor:
 
@@ -10,7 +10,7 @@ class AprioriExtractor:
 		self.min_conf = min_conf
 		self.discrete_granularity = [-1, -1, -1, 50, 50, 50000, 1000000, 20, 5000000, 50]
 		self.discrete_start = [0, 0, 0, 50, 1850, 50000, 1000000, 20, 5000000, 50]
-
+		
 	def run(self):
 		# read data
 		database, header = self.loadData()
@@ -29,6 +29,7 @@ class AprioriExtractor:
 		# compute large 1-itemsets
 		candidates = [(item,) for item in set(itertools.chain(*database))]
 		Supports[1] = self.selectCandidates(candidates, database)
+
 		L[1] = Supports[1].keys()
 		
 		# compute large k-itemsets
@@ -40,10 +41,63 @@ class AprioriExtractor:
 			L.append(Supports[i].keys())
 		Supports.pop()
 		L.pop()
-		
 		# extract rules
 		rules = self.extract1RRules(L, Supports)
-		print rules
+		self.printdata(Supports,rules, header)
+		# print rules
+	def printdata(self, supports, rules, header):
+		outfile = codecs.open('outfile.txt', encoding = 'utf-8', mode = 'w')
+		#sort supports in decs order
+		outfile.write('==Frequent itemsets (min_sup='+ "{0:.0f}%".format(min_sup * 100) +')\n')
+		for i in xrange(1,len(supports)):
+			sorted_supp = sorted(supports[i].items(), key=lambda x: x[1], reverse=True)
+			for each in sorted_supp:
+				h = header[each[0][0][0]]
+				f = str(each[0][0][1])
+				sup =  each[1]
+				if i==1:
+					outfile.write('[' + h +' : '+ f + '], ')
+					outfile.write("{0:.0f}%".format(sup * 100))
+					outfile.write('\n')
+				else:
+					outfile.write('[')
+					for inner in xrange(len(each[0])):
+						h = header[each[0][inner][0]]
+						f = str(each[0][inner][1])
+						if inner == i-1:
+							outfile.write( h +' : '+ f + '], ')
+						else:
+							outfile.write( h +' : '+ f +', ')
+					outfile.write("{0:.0f}%".format(sup * 100))
+					outfile.write('\n')
+		outfile.write('\r\n\n')
+		outfile.write('==High-confidence association rules (min_conf='+ "{0:.0f}%".format(min_conf * 100) +')\n')		
+		#sort rules in 
+		for rule in rules:
+			sup = supports[len(rule[0])][rule[0]]
+		 
+			for i in xrange(len(rule)):
+				if i==0:
+					for item in xrange(len(rule[i])):
+						h = str(header[rule[i][item][0]])
+						f = str(rule[i][item][1])
+				 
+						if len(rule[i]) == 1:
+							outfile.write('[' + h +' : '+ f + '] => ')
+						elif item == 0:
+							outfile.write('[' + h +' : '+ f + ', ')
+						elif item == len(rule[i]) - 1:
+							outfile.write(h +' : '+ f + '] => ')
+						else:
+							outfile.write(h +' : '+ f + ', ')
+				elif i==1:
+					h = str(header[rule[i][0][0]])
+					f = str(rule[i][0][1])
+					# (Conf: 100.0%, Supp: 75%)
+					outfile.write(h +' : '+ f + '  (Conf: ' + "{0:.0f}%".format(min_conf * 100) + ', Supp: ' + "{0:.0f}%".format(min_sup * 100) + ')\n')
+
+		return
+
 
 	def loadData(self):
 		database = header = None
@@ -137,6 +191,8 @@ if __name__ == '__main__':
 		print 'Usage: main.py datafile min_sup min_conf'
 		sys.exit()
 	try:
+		global min_sup
+		global min_conf
 		min_sup = float(sys.argv[2])
 		min_conf = float(sys.argv[3])
 	except:

@@ -1,0 +1,44 @@
+==Frequent itemsets (min_sup=30%)
+[BuildingClassification : R4-ELEVATOR], 79%
+[GrossIncomePerSqFt : 40], 74%
+[TotalUnits : 50], 50%
+[YearBuilt : 1950], 45%
+[MarketValuePerSqFt : 200], 39%
+[GrossSqFt : 50000], 39%
+[YearBuilt : 2000], 35%
+[MarketValuePerSqFt : 150], 32%
+[BuildingClassification : R4-ELEVATOR, GrossIncomePerSqFt : 40], 55%
+[TotalUnits : 50, GrossIncomePerSqFt : 40], 40%
+[YearBuilt : 1950, GrossIncomePerSqFt : 40], 39%
+[BuildingClassification : R4-ELEVATOR, TotalUnits : 50], 39%
+[GrossIncomePerSqFt : 40, MarketValuePerSqFt : 200], 38%
+[TotalUnits : 50, GrossSqFt : 50000], 37%
+[BuildingClassification : R4-ELEVATOR, YearBuilt : 1950], 33%
+[GrossSqFt : 50000, GrossIncomePerSqFt : 40], 32%
+[GrossIncomePerSqFt : 40, MarketValuePerSqFt : 150], 32%
+[BuildingClassification : R4-ELEVATOR, MarketValuePerSqFt : 200], 32%
+[TotalUnits : 50, YearBuilt : 1950], 30%
+[BuildingClassification : R4-ELEVATOR, GrossIncomePerSqFt : 40, MarketValuePerSqFt : 200], 31%
+[TotalUnits : 50, GrossSqFt : 50000, GrossIncomePerSqFt : 40], 31%
+[BuildingClassification : R4-ELEVATOR, TotalUnits : 50, GrossIncomePerSqFt : 40], 31%
+
+
+==High-confidence association rules (min_conf=70%)
+[TotalUnits : 50] => GrossSqFt : 50000  (Conf: 70%, Supp: 30%)
+[GrossSqFt : 50000] => TotalUnits : 50  (Conf: 70%, Supp: 30%)
+[YearBuilt : 1950] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[MarketValuePerSqFt : 200] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[MarketValuePerSqFt : 200] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[GrossIncomePerSqFt : 40] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[YearBuilt : 1950] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[TotalUnits : 50] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[TotalUnits : 50] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[GrossSqFt : 50000] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[MarketValuePerSqFt : 150] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[BuildingClassification : R4-ELEVATOR, MarketValuePerSqFt : 200] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[GrossIncomePerSqFt : 40, MarketValuePerSqFt : 200] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[BuildingClassification : R4-ELEVATOR, TotalUnits : 50] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[TotalUnits : 50, GrossIncomePerSqFt : 40] => BuildingClassification : R4-ELEVATOR  (Conf: 70%, Supp: 30%)
+[TotalUnits : 50, GrossSqFt : 50000] => GrossIncomePerSqFt : 40  (Conf: 70%, Supp: 30%)
+[TotalUnits : 50, GrossIncomePerSqFt : 40] => GrossSqFt : 50000  (Conf: 70%, Supp: 30%)
+[GrossSqFt : 50000, GrossIncomePerSqFt : 40] => TotalUnits : 50  (Conf: 70%, Supp: 30%)
