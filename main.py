@@ -53,21 +53,29 @@ class AprioriExtractor:
 			sorted_supp = sorted(supports[i].items(), key=lambda x: x[1], reverse=True)
 			for each in sorted_supp:
 				h = header[each[0][0][0]]
-				f = str(each[0][0][1])
+				if self.discrete_granularity[each[0][0][0]] < 0:
+					f = str(each[0][0][1])
+				else:
+					f = str('<=' + str(each[0][0][1]) + '&>=' + str(each[0][0][1] - self.discrete_granularity[each[0][0][0]]))
 				sup =  each[1]
 				if i==1:
-					outfile.write('[' + h +' : '+ f + '], ')
+					outfile.write('[' + h +': '+ f + '], ')
 					outfile.write("{0:.0f}%".format(sup * 100))
 					outfile.write('\n')
 				else:
 					outfile.write('[')
 					for inner in xrange(len(each[0])):
 						h = header[each[0][inner][0]]
+					if self.discrete_granularity[each[0][inner][0]] < 0:
 						f = str(each[0][inner][1])
+					else:
+						f = str('<=' + str(each[0][inner][1]) + '&>=' + str(each[0][inner][1] - self.discrete_granularity[each[0][inner][0]]))
+
+						# f = str(each[0][inner][1])
 						if inner == i-1:
-							outfile.write( h +' : '+ f + '], ')
+							outfile.write( h +': '+ f + '], ')
 						else:
-							outfile.write( h +' : '+ f +', ')
+							outfile.write( h +': '+ f +', ')
 					outfile.write("{0:.0f}%".format(sup * 100))
 					outfile.write('\n')
 		outfile.write('\r\n\n')
@@ -80,24 +88,29 @@ class AprioriExtractor:
 				if i==0:
 					for item in xrange(len(rule[i])):
 						h = str(header[rule[i][item][0]])
-						f = str(rule[i][item][1])
-				 
-						if len(rule[i]) == 1:
-							outfile.write('[' + h +' : '+ f + '] => ')
-						elif item == 0:
-							outfile.write('[' + h +' : '+ f + ', ')
-						elif item == len(rule[i]) - 1:
-							outfile.write(h +' : '+ f + '] => ')
+						if self.discrete_granularity[rule[i][item][0]] < 0:
+							f = str(rule[i][item][1])
 						else:
-							outfile.write(h +' : '+ f + ', ')
+							f = str('<=' + str(rule[i][item][1]) + '&>=' + str(rule[i][item][1] - self.discrete_granularity[rule[i][item][0]]))
+						if len(rule[i]) == 1:
+							outfile.write('[' + h +': '+ f + '] => ')
+						elif item == 0:
+							outfile.write('[' + h +': '+ f + ', ')
+						elif item == len(rule[i]) - 1:
+							outfile.write(h +': '+ f + '] => ')
+						else:
+							outfile.write(h +': '+ f + ', ')
 				elif i==1:
 					h = str(header[rule[i][0][0]])
-					f = str(rule[i][0][1])
+					if self.discrete_granularity[rule[i][0][0]] < 0:
+						f = str(rule[i][0][1])
+					else:
+						f = str('<=' + str(rule[i][0][1]) + '&>=' + str(rule[i][0][1] - self.discrete_granularity[rule[i][0][0]]))
+
+					# f = str(rule[i][0][1])
 					# (Conf: 100.0%, Supp: 75%)
-					outfile.write(h +' : '+ f + '  (Conf: ' + "{0:.0f}%".format(min_conf * 100) + ', Supp: ' + "{0:.0f}%".format(min_sup * 100) + ')\n')
-
+					outfile.write(h +': '+ f + '  (Conf: ' + "{0:.0f}%".format(min_conf * 100) + ', Supp: ' + "{0:.0f}%".format(min_sup * 100) + ')\n')
 		return
-
 
 	def loadData(self):
 		database = header = None
