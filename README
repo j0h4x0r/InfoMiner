@@ -61,10 +61,8 @@ Our main function calls for the run() function, which does the following steps:
 	* sort items in transactions: keep each transaction in sorted order for later generation of new frequent items
 	* a priori Algorithm implemented exactly following the Agrawal and Srikant paper:
 		* compute large 1-itemsets: candidate generation for 1-itemset and then use selectCandidates() to comput L_1
-		* compute large k-itemsets: while L_(k-1) is not empty, we continue to compute the candidates by calling the 		  function apriorGen(), and then use selectCandidates() to filter out the L_k with support and confidence above\
-		  threshold.
-	* extract rules from large itemsets: call function extract1RRules() to extract association rules with exactly one item 
-	  on the right hand side and with at least one item on the left hand side.
+		* compute large k-itemsets: while L_(k-1) is not empty, we continue to compute the candidates by calling the function apriorGen(), and then use selectCandidates() to filter out the L_k with support and confidence above threshold.
+	* extract rules from large itemsets: call function extract1RRules() to extract association rules with exactly one item on the right hand side and with at least one item on the left hand side.
 
 Detailed description for each step (The definitions for L_k and C_k are the same as the paper):
 
@@ -79,11 +77,11 @@ a) Read data from file&discretize numeric arribute-
 - In the end of this step, we have a database that consists of original non-numeric values and discretized numeric values that are ready for doing A priori algorithm on.
 
 b) A priori algorithm implementation-
-- compute large 1-itemsets: candidate generation for 1-itemset and then use selectCandidates() to comput L_1
-	* the first candidate sets consist of 1-item is simply the unionset of all items in our 'market basket'. We use a list of tuples datastructure to store all candidates, eg. (5, 5000) represents in column five we have a value of 5000.
+- compute large 1-itemsets: candidate generation for 1-itemset and then use selectCandidates() to compute L_1
+	* the first candidate sets consist of 1-item is simply the union set of all items in our 'market basket'. We use a list of tuples data structure to store all candidates, eg. (5, 5000) represents in column five we have a value of 5000.
 	* selectCandidates() function takes in the above candidate set and original database, compute the count of support transactions for each candidate, returns a dictionary with the keys large itemsets and the values supports.
-- compute large k-itemsets: while L_(k-1) is not empty, we continue to compute the candidates by calling the 		  function apriorGen(), and then use selectCandidates() to filter out the L_k with support and confidence above threshold.
-	* apriorGen() function implemements the Apriori Candidate Generation method as described in Section 2.1.1 of the Agrawal and Srikant paper. We joined each candidate set with length k to itself, filter out all itemsets that satisties the condition mentioned in the in Section 2.1.1 of the Agrawal and Srikant paper, and pruned out itemsets remove candidates whose subsets are not in L_(k-1) before returning the new set of candidates.
+- compute large k-itemsets: while L_(k-1) is not empty, we continue to compute the candidates by calling the function apriorGen(), and then use selectCandidates() to filter out the L_k with support and confidence above threshold.
+	* apriorGen() function implements the Apriori Candidate Generation method as described in Section 2.1.1 of the Agrawal and Srikant paper. We joined each candidate set with length k to itself, filter out all itemsets that satisfies the condition mentioned in the in Section 2.1.1 of the Agrawal and Srikant paper, and pruned out itemsets remove candidates whose subsets are not in L_(k-1) before returning the new set of candidates.
 	* again we call selectCandidates() function, which takes in the above candidate set and original database, compute the count of support transactions for each candidate, returns a dictionary with the keys large itemsets and the values supports.
 	* we append the L_(k-1) from the above candidate keys to L set, and continue to generate more candidate sets until there is no more sets.
 
@@ -106,14 +104,14 @@ After we stored all selected rules in a list of dictionaries, we simply call our
 python main.py 'INTEGRATED-DATASET.csv'  0.3 0.7
 Findings:
 a) when GrossIncomePerSqFt is in the top range [20,40], the BuildingClassification is more likely to be 'R4-ELEVATOR'. 
-b) reversly, when the building classification is 'R4-ELEVATOR', and MarketValuePerSqFt is in the top range[150,200], the GrossIncomePerSqFt and GrossSqFt is likely to also be high, which falls in their top range respectivly
+b) reversely, when the building classification is 'R4-ELEVATOR', and MarketValuePerSqFt is in the top range[150,200], the GrossIncomePerSqFt and GrossSqFt is likely to also be high, which falls in their top range respectively
 c) YearBuilt in between 1900 and 1950 tends to have GrossIncomePerSqFt in the top range[20,40]
-The above findings are make sense if we think about it: People with higher income are more likely to liv in aprtments equipped with elevatorrs, and reversly it make sense that wealthy people may live in apartments with less units and have higher market values. It is particularly interesting that apartments built between 1900-1950, maybe during pre-war periods, are attractive to more higher income populations.
+The above findings make sense if we think about it: People with higher income are more likely to live in apartments equipped with elevators, and reversely it also makes sense that wealthy people may live in apartments with less units and have higher market values. It is particularly interesting that apartments built between 1900-1950, maybe during pre-war periods, are attractive to more higher income populations.
 
 * Some significant additional information
 ----------------------------------------------------------------------------------------------------------------------------
 Discretize-
-This is fully discussed in 'Internal design of the project' section a). We can easily alter the range/start of the numeric fields given a changed dataset by altering the two lists: discrete_granularity, discrete_start. 
+This is fully discussed in 'Internal design of the project' section a). We can easily alter the range/start of the numeric fields given a changed dataset by altering the two lists: discrete_granularity, discrete_start. The current numbers in the tow list are obtained by experiments to make sure we can get meaningful rules with reasonable min_sup and min_conf.
 Output Clarificaton-
 The output.txt contains an interesting sample run output, following strictly the format given in the assignment:
 	==Frequent itemsets (min_sup=30%)
